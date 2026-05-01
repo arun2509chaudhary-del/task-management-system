@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Manager</title>
+</head>
+<body>
+
+<h2>Create User</h2>
+<input type="text" id="name" placeholder="Enter Name">
+<input type="email" id="email" placeholder="Enter Email">
+<button onclick="createUser()">Create User</button>
+
+<h2>Assign Task</h2>
+<input type="number" id="userId" placeholder="User ID">
+<input type="text" id="title" placeholder="Task Title">
+<input type="text" id="status" placeholder="Status">
+<button onclick="assignTask()">Assign Task</button>
+
+<h2>Get User Tasks</h2>
+<input type="number" id="getUserId" placeholder="User ID">
+<button onclick="getTasks()">Get Tasks</button>
+
+<h3>Result:</h3>
+<pre id="result"></pre>
+
+<script>
+
+// CREATE USER
+function createUser() {
+    let name = document.getElementById("name").value.trim();
+    let email = document.getElementById("email").value.trim();
+
+    if (!name || !email) {
+        alert("Fill all fields!");
+        return;
+    }
+
+    fetch("http://localhost:4041/user/create", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({name, email})
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("User Created!");
+        document.getElementById("result").innerText =
+            "User ID: " + data.id +
+            "\nName: " + data.name +
+            "\nEmail: " + data.email;
+    });
+}
+
+// ASSIGN TASK
+function assignTask() {
+    let userId = document.getElementById("userId").value;
+    let title = document.getElementById("title").value;
+    let status = document.getElementById("status").value;
+
+    if (!userId || !title || !status) {
+        alert("Fill all fields!");
+        return;
+    }
+
+    fetch("http://localhost:4041/tasks/assign/" + userId, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({title, status})
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Task Assigned!");
+        document.getElementById("result").innerText =
+            JSON.stringify(data, null, 2);
+    });
+}
+
+// GET TASKS
+function getTasks() {
+    let userId = document.getElementById("getUserId").value;
+
+    if (!userId) {
+        alert("Enter user ID!");
+        return;
+    }
+
+    fetch("http://localhost:4041/tasks/user/" + userId)
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("result").innerText =
+            JSON.stringify(data, null, 2);
+    });
+}
+
+</script>
+
+</body>
+</html>
