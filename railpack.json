@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "packages": {
+    "java": "17"
+  },
+  "build": {
+    "buildCommand": "mvn -DoutputFile=target/mvn-dependency-list.log -B -DskipTests clean dependency:list install"
+  },
+  "deploy": {
+    "startCommand": "java -Dserver.port=$PORT $JAVA_OPTS -jar target/*jar"
+  }
+}
